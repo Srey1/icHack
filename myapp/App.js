@@ -7,12 +7,12 @@ export default function App() {
 
   useEffect(() => {
     axios
-      .get('http://localhost:8000/api/hello/')
+      .get('http://172.20.10.7:8000/api/hello/')
       .then((response) => {
         setMessage(response.data.message);
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error.response);
       });
   }, []);
 
