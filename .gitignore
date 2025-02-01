@@ -173,3 +173,6 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# Mac ds store
+.DS_Store
