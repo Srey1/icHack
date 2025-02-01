@@ -1,0 +1,5 @@
+# API key for Anthropic
+ANTRHOPIC_API_KEY="ADD API KEY HERE"
+
+# For running local app
+ALLOWED_HOSTS="ADD IP ADDRESS HERE"
