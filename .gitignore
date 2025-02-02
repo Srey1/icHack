@@ -176,3 +176,4 @@ yarn-error.*
 
 # Mac ds store
 .DS_Store
+*footage/
