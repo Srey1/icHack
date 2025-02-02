@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 2,
   },
   largeTranscription: {
-    fontSize: 50, // Large size for visibility
+    fontSize: 75, // Large size for visibility
     fontWeight: 'bold',
     color: '#000000', // High contrast
     textAlign: 'center',
@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
     borderColor: '#008000', // ✅ Green border in GO mode
   },
     goText: {
-      fontSize: 50, // Large size for visibility
+      fontSize: 75, // Large size for visibility
       fontWeight: 'bold',
       color: '#FFFFFF', // High contrast
       textAlign: 'center',
