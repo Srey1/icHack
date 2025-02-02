@@ -15,6 +15,8 @@ import axios from "axios";
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Speech from 'expo-speech';
 import Constants from "expo-constants";
+import { createPrompt } from "./user_prompt";
+
 const {googleApiKey} = Constants.expoConfig.extra;
 
 const { width, height } = Dimensions.get('window');
@@ -136,7 +138,11 @@ export default function App() {
         .map((result) => result.alternatives?.[0]?.transcript || "")
         .join(" ");
   
-      setTranscribedText(transcription || "No transcription found.");
+      // Claude API call
+      const promptResponse = await createPrompt(transcription);
+      console.log("Prompt Response:", promptResponse.response);
+
+      setTranscribedText(promptResponse.response || "No transcription found.");
     } catch (error) {
       console.error("Error transcribing audio:", error.response?.data || error);
       Alert.alert("Error", "Could not transcribe audio.");
@@ -233,7 +239,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 2,
   },
   largeTranscription: {
-    fontSize: 100, // Large size for visibility
+    fontSize: 75, // Large size for visibility
     fontWeight: 'bold',
     color: '#000000', // High contrast
     textAlign: 'center',

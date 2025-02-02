@@ -1,7 +1,10 @@
 import { Anthropic } from '@anthropic-ai/sdk';
 import Constants from "expo-constants";
-const {anthropicApiKey} = Constants.expoConfig.extra;
 
+const {anthropicApiKey} = Constants.expoConfig.extra;
+const ANTHROPIC_API_KEY = anthropicApiKey;
+
+console.log("Anthropic API Key:", ANTHROPIC_API_KEY);
 const anthropic = new Anthropic({
     apiKey: anthropicApiKey,
   });
@@ -71,19 +74,23 @@ from this input.
 
 export async function createPrompt(userSpeech) {
   try {
+
     // Send a prompt to Claude to decipher user input into a readable JSON
     const response = await anthropic.messages.create({
         model: "claude-3-5-sonnet-20241022",
         max_tokens: 2048,
         system: SYSTEM_PROMPT,
         messages: [{ role: "user", content: userSpeech }]
+    }).then((response) => {
+        return JSON.parse(response.content[0].text);
     });
 
     if (response.type == "error") {
       throw new Error("Prompt error");
     }
+    //console.log("Prompt Response:", response);
+    return response;
 
-    return JSON.parse(response.content[0].text);
   } catch (error) {
     console.log(error);
     return {

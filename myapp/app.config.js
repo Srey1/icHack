@@ -3,7 +3,7 @@ export default ({ config }) => {
       ...config,
       extra: {
         myApiUrl: process.env.BACKEND_IP || '',
-        anthropicApiKey: process.env.ANTHROPIC_API_KEY || '',
+        anthropicApiKey: process.env.ANTRHOPIC_API_KEY || '',
         googleApiKey: process.env.GOOGLE_API_KEY || '',
       }
     };
