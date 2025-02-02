@@ -5,6 +5,7 @@ export default ({ config }) => {
         myApiUrl: process.env.BACKEND_IP || '',
         anthropicApiKey: process.env.ANTRHOPIC_API_KEY || '',
         googleApiKey: process.env.GOOGLE_API_KEY || '',
+        googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY || '',
       }
     };
   };

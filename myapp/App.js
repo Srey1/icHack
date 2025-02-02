@@ -11,10 +11,13 @@ import {
 } from "react-native";
 import { Audio } from "expo-av";
 import * as FileSystem from "expo-file-system";
+import { useLocation } from "./use_location";
 import axios from "axios";
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Speech from 'expo-speech';
 import Constants from "expo-constants";
+import { getBusRoute } from "./get_bus_route";
+const { myApiUrl } = Constants.expoConfig.extra;
 import { createPrompt } from "./user_prompt";
 
 const {googleApiKey} = Constants.expoConfig.extra;
@@ -25,6 +28,7 @@ const { width, height } = Dimensions.get('window');
 const GOOGLE_API_KEY = googleApiKey;
 
 export default function App() {
+  const { location, errorMsg, loading } = useLocation();
   const [recording, setRecording] = useState(null);
   const [recordedUri, setRecordedUri] = useState(null);
   const [transcribedText, setTranscribedText] = useState("");

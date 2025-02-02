@@ -13,6 +13,7 @@
     "@google-cloud/speech": "^6.7.0",
     "@react-native-voice/voice": "^3.2.4",
     "@anthropic-ai/sdk": "^0.36.3",
+    "@googlemaps/google-maps-services-js": "^3.4.0",
     "axios": "^1.7.9",
     "child_process": "^1.0.2",
     "cors": "^2.8.5",
@@ -28,7 +29,11 @@
     "react-icons": "^5.4.0",
     "react-native": "0.76.6",
     "react-native-fs": "^2.20.0",
-    "stream": "^0.0.3"
+    "stream": "^0.0.3",
+    "expo-location": "^18.0.5",
+    "react-native-geolocation-service": "^5.3.1",
+    "react-native-maps": "^1.20.1",
+    "react-native-permissions": "^5.2.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
