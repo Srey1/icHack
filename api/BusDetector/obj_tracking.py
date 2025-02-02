@@ -16,7 +16,7 @@ paddle = PaddleOCR(use_angle_cls=True, lang="en")
 # night time
 daytime = False
 # cap = cv2.VideoCapture("icHack/BusDetector/flipped_stock_footage/Bus_Footage_Cropped 11.mp4") # (2) 328
-cap = cv2.VideoCapture("icHack/BusDetector/flipped_stock_footage/Bus_Footage_Cropped 10.mp4") # (1) 360
+cap = cv2.VideoCapture("api/BusDetector/demo_clips/Bus_360.mp4") # (1) 360
 
 
 
@@ -54,7 +54,8 @@ def reduce_glow(image):
 
 def bus_search(bus_num):
 
-    target_bus_number = bus_num
+    target_bus_number = str(bus_num)
+    print(f"TARGET NUMBER: {target_bus_number}")
 
     # Frame tracking
     frame_count = 0
@@ -70,13 +71,13 @@ def bus_search(bus_num):
     curr_tracking_delay = 0
     target_bus_prev_coords = None
 
-    start_time = time.time()
+    # start_time = time.time()
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
             break
 
-        if detected_bus_number is not None and detected_direction == "Left":
+        if detected_bus_number == target_bus_number and detected_direction == "Left":
             print(f"Bus Number: {detected_bus_number}, Direction: {detected_direction}")
             break  
 
@@ -110,7 +111,7 @@ def bus_search(bus_num):
                     bus_roi = cv2.cvtColor(bus_roi, cv2.COLOR_BGR2RGB)
 
                     text_results = paddle.ocr(bus_roi)
-                    # print(text_results)
+                    print(text_results)
 
                     if text_results and isinstance(text_results, list):  
                         for result in text_results:
@@ -139,11 +140,11 @@ def bus_search(bus_num):
                                                         detected_direction = "Right"
                                                         print(f"\nTarget bus number {target_bus_number} found but its going away from us :(\n")
                                                         curr_tracking = False 
-                                                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                                                    cv2.rectangle(frame, (prev_x1, prev_y1), (prev_x2, prev_y2), (255, 0, 0), 2)
-                                                    cv2.imshow("haha", frame)
-                                                    cv2.waitKey(0)
-                                                    cv2.destroyAllWindows()
+                                                    # cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                                                    # cv2.rectangle(frame, (prev_x1, prev_y1), (prev_x2, prev_y2), (255, 0, 0), 2)
+                                                    # cv2.imshow("haha", frame)
+                                                    # cv2.waitKey(0)
+                                                    # cv2.destroyAllWindows()
 
                                                     break
             ocr_counter += 1 
@@ -151,33 +152,37 @@ def bus_search(bus_num):
             curr_tracking_delay -= 1                                    
 
         # Show the processed video frame
-        cv2.imshow("Bus Detection & Number Recognition", frame)
+        # cv2.imshow("Bus Detection & Number Recognition", frame)
 
         # Quit on 'q' key
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+        #     break
 
         frame_count += 1 
 
-    end_time = time.time()
-    elapsed_time = end_time - start_time
+    # end_time = time.time()
+    # elapsed_time = end_time - start_time
     # print(f"Elapsed time: {elapsed_time}")
     cap.release()
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
 
     # Output the final result
     if detected_bus_number == target_bus_number and detected_direction == "Left":
         print(f"\nTarget found! - Bus Number: {detected_bus_number}, approaching!\n")
+        return True
     else:
         print("\nNo matching bus number and direction detected.\n")
+        return False
 
 
-def main() -> None:
+def main() -> bool:
     args = sys.argv
     if len(args) != 2:
         print("Please call this file with a target bus number!")
     else:
-        bus_search(args[1])
+        out = bus_search(args[1])
+    
+    return out
 
 
 if __name__ == "__main__":

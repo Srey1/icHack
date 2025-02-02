@@ -35,6 +35,8 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [permissionResponse, requestPermission] = Audio.usePermissions();
   const [sound, setSound] = useState(null);
+
+  const [busNumber, setBusNumber] = useState(null);
   console.log(GOOGLE_API_KEY);
   useEffect(() => {
     (async () => {
@@ -44,6 +46,19 @@ export default function App() {
       }
     })();
   }, []);
+
+
+  useEffect(() => {
+    axios
+      .post(`http://${myApiUrl}:8000/api/bus/`, busNumber
+      )
+      .then((response) => {
+        console.log(response.data.message);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [busNumber]);
 
   const speak = (text) => {
     Speech.speak(text);
@@ -153,10 +168,18 @@ export default function App() {
           locationCoords.latitude, 
           promptResponse.response
         );
-
+        
         setTranscribedText(busResponse.busNumber || "Couldn't find bus route");
       } else {
         setTranscribedText(promptResponse.response || "No transcription found.");
+      }
+
+      if (busNumber) {
+        axios.post(`http://${myApiUrl}:8000/api/bus/`, String.toString(busNumber)).then((response) => {
+          console.log(response.data.message);
+        }).catch((error) => {
+          console.log(error);
+        });
       }
 
     } catch (error) {

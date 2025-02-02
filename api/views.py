@@ -2,7 +2,7 @@ from django.shortcuts import render
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from BusDetector.obj_tracking import bus_search
+from .BusDetector.obj_tracking import bus_search
 
 def hello(request):
     return JsonResponse({'message': 'Hello from Django!'})
@@ -17,7 +17,11 @@ def bus(request):
         try:
             data = json.loads(request.body)
             print(data)
-            bus_search(data)
+            found = bus_search(data)
+            response = {
+                'status': 'ok',
+                'message': found,
+            }
         except json.JSONDecodeError:
             response = {
                 'status': 'error',
