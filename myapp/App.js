@@ -36,6 +36,8 @@ export default function App() {
   const [permissionResponse, requestPermission] = Audio.usePermissions();
   const [sound, setSound] = useState(null);
 
+  const [isGoMode, setIsGoMode] = useState(false); // ✅ New state for GO mode
+
   const [busNumber, setBusNumber] = useState(null);
   console.log(GOOGLE_API_KEY);
   useEffect(() => {
@@ -54,6 +56,11 @@ export default function App() {
       .post(`http://${myApiUrl}:8000/api/bus/`, busNumber
       )
       .then((response) => {
+        if(response.data.message == true) {
+          console.log()
+          speak("Bus is on the way");
+          activateGoMode(); // ✅ Automatically activate "GO" mode when stopping recording
+        }
         console.log(response.data.message);
       })
       .catch((error) => {
@@ -66,10 +73,17 @@ export default function App() {
   };
 
   
+  // ✅ Function to Activate "GO" Mode
+  const activateGoMode = () => {
+    setIsGoMode(true);
+  };
+
+  
 
   // 🎤 Start Recording
   const startRecording = async () => {
     try {
+      setIsGoMode(false);
       if (!permissionResponse || permissionResponse.status !== "granted") {
         Alert.alert("Permission Required", "Microphone access is needed.");
         return;
@@ -198,11 +212,11 @@ export default function App() {
   
 
   return (
-    <View style={[styles.container, recording && styles.recordingBackground]}>
+    <View style={[styles.container, recording && styles.recordingBackground, isGoMode && styles.goModeBackground]}>
       
       {/* 📜 Large Display Transcription */}
       {transcribedText ? (
-        <Text style={styles.largeTranscription}>{transcribedText}</Text>
+        <Text style={[styles.largeTranscription, isGoMode && styles.goText]}>{transcribedText}</Text>
       ) : (
         <Text style={styles.largeTranscription}>---</Text> // Placeholder for visibility
       )}
@@ -214,19 +228,19 @@ export default function App() {
         accessibilityRole="button"
         accessibilityHint="Double tap to start or stop audio recording"
         onPress={recording ? stopRecording : startRecording}
-        style={[styles.button, recording && styles.buttonActive]}
+        style={[styles.button, recording && styles.buttonActive, isGoMode && styles.goButton]}
         activeOpacity={0.7}
       >
         <MaterialIcons 
           name="mic"
           size={height * 0.2}
-          color={recording ? '#CC0000' : '#FFFFFF'} // Red icon when recording, white when not
+          color={recording ? '#CC0000' : isGoMode ? '#008000' : '#FFFFFF'} // Red icon when recording, white when not
           accessible={false}
         />
       </TouchableOpacity>
   
       {/* 🎤 Recording Status */}
-      <Text style={[styles.statusText, recording && styles.statusTextRecording]}>
+      <Text style={[styles.statusText, recording && styles.statusTextRecording, isGoMode && styles.goTextbottom]}>
         {recording ? 'RECORDING' : 'Tap microphone to start'}
       </Text>
   
@@ -298,6 +312,17 @@ const styles = StyleSheet.create({
     borderColor: '#008000', // ✅ Green border in GO mode
   },
     goText: {
-    color: '#FFFFFF', // ✅ White text in GO mode
+      fontSize: 50, // Large size for visibility
+      fontWeight: 'bold',
+      color: '#FFFFFF', // High contrast
+      textAlign: 'center',
+      marginBottom: 20, // Space before microphone button
   },
+  goTextbottom: {
+    color: '#FFFFFF',
+    fontSize: 34,
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+},
 });

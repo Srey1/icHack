@@ -38,13 +38,11 @@ for clarification.
 
 After your analysis, provide your final result in the following JSON format:
 
-<result>
 {
     "type": <response_type>,
     "interpretation": <interpretation>,
     "response": <response>
 }
-</result>
 
 Where the response_type, interpretation and response are:
 
