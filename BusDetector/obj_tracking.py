@@ -20,9 +20,8 @@ bus_boxes = []
 ocr_counter = 0  # Track OCR calls
 OCR_INTERVAL = 1  # Run OCR every 10 YOLO detections
 
-# * Initialize tracker
-tracker = None
-prev_center = None  # To store the previous center of the bounding box
+# * List to store trackers and their previous centers
+trackers = []  # Format: [(tracker, prev_center), ...]
 
 # 🚀 Function: Enhance contrast instead of thresholding (Preserves text details)
 def enhance_contrast(image):
@@ -56,11 +55,25 @@ while cap.isOpened():
                 if cls_id == 5 and conf > 0.5:  # Class ID 5 = Bus
                     bus_boxes.append((x1, y1, x2, y2))
 
-                    # * Initialize tracker on the first detected bus
-                    if tracker is None:
+                    # * Check if this bus is already being tracked
+                    is_new_bus = True
+                    for tracker, _ in trackers:
+                        tracker_bbox = tracker.get_position()  # Get current tracker position
+                        tracker_x1, tracker_y1, tracker_w, tracker_h = map(int, tracker_bbox)
+                        tracker_x2, tracker_y2 = tracker_x1 + tracker_w, tracker_y1 + tracker_h
+
+                        # Check if the new bus overlaps with an existing tracker
+                        if (x1 < tracker_x2 and x2 > tracker_x1 and
+                            y1 < tracker_y2 and y2 > tracker_y1):
+                            is_new_bus = False
+                            break
+
+                    # * If it's a new bus, initialize a tracker for it
+                    if is_new_bus:
                         bbox = (x1, y1, x2 - x1, y2 - y1)  # Convert to (x, y, w, h) format
                         tracker = cv2.TrackerCSRT_create()
                         tracker.init(frame, bbox)
+                        trackers.append((tracker, None))  # Add to trackers list
 
         # 🚀 Run OCR every 10 YOLO detections to reduce lag
         if ocr_counter % OCR_INTERVAL == 0:
@@ -96,8 +109,8 @@ while cap.isOpened():
 
         ocr_counter += 1  # Increment OCR tracking counter
 
-    # * Update tracker and determine direction
-    if tracker is not None:
+    # * Update all trackers and determine directions
+    for i, (tracker, prev_center) in enumerate(trackers):
         success, bbox = tracker.update(frame)
         if success:
             # * Draw bounding box
@@ -113,10 +126,10 @@ while cap.isOpened():
                     direction = "Right"
                 else:
                     direction = "Left"
-                cv2.putText(frame, f"Direction: {direction}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                cv2.putText(frame, f"Bus {i+1}: {direction}", (10, 30 + 30 * i), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
             # * Update previous center
-            prev_center = center
+            trackers[i] = (tracker, center)  # Update tracker with new center
 
     # Show the processed video frame
     cv2.imshow("Bus Detection & Number Recognition", frame)
