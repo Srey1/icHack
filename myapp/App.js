@@ -1,23 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { createPrompt } from "./user_prompt";
+import { useLocation } from "./use_location";
 import axios from "axios";
 import Constants from "expo-constants";
-const {myAPIUrl} = Constants.expoConfig.extra;
+import { getBusRoute } from "./get_bus_route";
+const { myApiUrl } = Constants.expoConfig.extra;
 
 export default function App() {
   const [message, setMessage] = useState("");
+  const { location, errorMsg, loading } = useLocation();
 
   useEffect(() => {
     axios
-      .get(`http://${myAPIUrl}:8000/api/hello/`)
+      .get(`http://${myApiUrl}:8000/api/hello/`)
       .then((response) => {
         setMessage(response.data.message);
       })
       .catch((error) => {
-        console.log(error.response);
+        console.log(error);
       });
   }, []);
+
+  if (loading) {
+    return <Text>Getting location...</Text>;
+  }
+
+  if (errorMsg) {
+    return <Text>{errorMsg}</Text>;
+  }
+
 
   return (
     <View style={styles.container}>
