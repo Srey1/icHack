@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 2,
   },
   largeTranscription: {
-    fontSize: 75, // Large size for visibility
+    fontSize: 50, // Large size for visibility
     fontWeight: 'bold',
     color: '#000000', // High contrast
     textAlign: 'center',

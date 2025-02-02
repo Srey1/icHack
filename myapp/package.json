@@ -10,30 +10,30 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@google-cloud/speech": "^6.7.0",
-    "@react-native-voice/voice": "^3.2.4",
     "@anthropic-ai/sdk": "^0.36.3",
+    "@google-cloud/speech": "^6.7.0",
     "@googlemaps/google-maps-services-js": "^3.4.0",
+    "@react-native-voice/voice": "^3.2.4",
     "axios": "^1.7.9",
     "child_process": "^1.0.2",
     "cors": "^2.8.5",
-    "events": "^3.3.0",
     "dotenv": "^16.4.7",
+    "events": "^3.3.0",
     "expo": "~52.0.28",
     "expo-audio": "~0.3.4",
     "expo-av": "~14.0.5",
     "expo-constants": "^17.0.5",
+    "expo-location": "^18.0.5",
     "expo-speech": "^13.0.1",
     "expo-status-bar": "~2.0.1",
     "react": "18.3.1",
     "react-icons": "^5.4.0",
     "react-native": "0.76.6",
     "react-native-fs": "^2.20.0",
-    "stream": "^0.0.3",
-    "expo-location": "^18.0.5",
     "react-native-geolocation-service": "^5.3.1",
     "react-native-maps": "^1.20.1",
-    "react-native-permissions": "^5.2.4"
+    "react-native-permissions": "^5.2.4",
+    "stream": "^0.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
