@@ -12,10 +12,12 @@
   "dependencies": {
     "@google-cloud/speech": "^6.7.0",
     "@react-native-voice/voice": "^3.2.4",
+    "@anthropic-ai/sdk": "^0.36.3",
     "axios": "^1.7.9",
     "child_process": "^1.0.2",
     "cors": "^2.8.5",
     "events": "^3.3.0",
+    "dotenv": "^16.4.7",
     "expo": "~52.0.28",
     "expo-audio": "~0.3.4",
     "expo-av": "~14.0.5",
