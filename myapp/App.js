@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { createPrompt } from "./user_prompt";
+import axios from "axios";
+import Constants from "expo-constants";
+const {myAPIUrl} = Constants.expoConfig.extra;
 
 export default function App() {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     axios
-      .get('http://172.20.10.7:8000/api/hello/')
+      .get(`http://${myAPIUrl}:8000/api/hello/`)
       .then((response) => {
         setMessage(response.data.message);
       })
@@ -26,8 +29,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
