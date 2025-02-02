@@ -13,7 +13,11 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "Allow microphone access for speech recognition",
+        "NSSpeechRecognitionUsageDescription": "Allow speech recognition for converting speech to text"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -23,6 +27,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-audio"
+    ]
   }
 }
