@@ -12,8 +12,18 @@ model = YOLO("yolov8n.pt")  # Use "yolov8s.pt" for better accuracy
 paddle = PaddleOCR(use_angle_cls=True, lang="en")
 
 # Open video stream (Change `0` for webcam or use file path)
-cap = cv2.VideoCapture("icHack/BusDetector/flipped_stock_footage/Double_Bus_139.mp4")
+
+# daytime
+daytime = True
+cap = cv2.VideoCapture("icHack/BusDetector/flipped_stock_footage/Double_Bus_139.mp4") # (3) 139
+
+# night time
+# daytime = False
+# cap = cv2.VideoCapture("icHack/BusDetector/flipped_stock_footage/Bus_Footage_Cropped 11.mp4") # (2) 328
+# cap = cv2.VideoCapture("icHack/BusDetector/flipped_stock_footage/Bus_Footage_Cropped 10.mp4") # (1) 360
+
 target_bus_number = "139"
+
 # Frame tracking
 frame_count = 0
 bus_boxes = []
@@ -97,7 +107,11 @@ while cap.isOpened():
                 bus_roi = frame[y1:y2, x1:x2]
 
                 # Enhance contrast instead of thresholding
-                # bus_roi = enhance_contrast(bus_roi)
+                if not daytime:
+                    bus_roi = enhance_contrast(bus_roi)
+                # cv2.imshow("contrast", bus_roi)
+                # cv2.waitKey(0)
+                # cv2.destroyAllWindows()
                 # bus_roi = reduce_glow(bus_roi)
 
                 # Convert to RGB (PaddleOCR requires RGB)
@@ -105,7 +119,7 @@ while cap.isOpened():
 
                 # Run OCR (Check for None before iterating)
                 text_results = paddle.ocr(bus_roi)
-                print(text_results)
+                # print(text_results)
 
                 if text_results and isinstance(text_results, list):  # Ensure valid OCR results
                     for result in text_results:
@@ -129,9 +143,10 @@ while cap.isOpened():
                                                 next_center = (x1 + x2) / 2
                                                 if next_center < prev_center:
                                                     detected_direction = "Left"
+                                                    print(f"\nTarget bus number {target_bus_number} found moving towards us!\n")
                                                 else:
                                                     detected_direction = "Right"
-                                                    print(f"Found bus {target_bus_number} but its going right")
+                                                    print(f"\nTarget bus number {target_bus_number} found but its going away from us :(\n")
                                                     curr_tracking = False 
                                                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
                                                 cv2.rectangle(frame, (prev_x1, prev_y1), (prev_x2, prev_y2), (255, 0, 0), 2)
@@ -155,12 +170,12 @@ while cap.isOpened():
 
 end_time = time.time()
 elapsed_time = end_time - start_time
-print(f"Elapsed time: {elapsed_time}")
+# print(f"Elapsed time: {elapsed_time}")
 cap.release()
 cv2.destroyAllWindows()
 
 # Output the final result
-if detected_bus_number is not None and detected_direction is not None:
-    print(f"Final Result - Bus Number: {detected_bus_number}, Direction: {detected_direction}")
+if detected_bus_number == target_bus_number and detected_direction == "Left":
+    print(f"\nTarget found! - Bus Number: {detected_bus_number}, approaching!\n")
 else:
-    print("No matching bus number and direction detected.")
+    print("\nNo matching bus number and direction detected.\n")
