@@ -35,8 +35,9 @@ export async function getBusRoute(longitude, latitude, destination) {
   try {
     const response = await axios.get(url);
     const data = response.data;
-  
+    console.log("Geological data:", data)
     if (data.status == "OK") {
+      
       const route = response.data.routes[0];
       const directions = route.legs[0].steps[0];
       if (directions.travel_mode != "TRANSIT") {

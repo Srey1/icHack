@@ -146,18 +146,35 @@ export default function App() {
       const promptResponse = await createPrompt(transcription);
       console.log("Prompt Response:", promptResponse.response);
 
+
       if (promptResponse.type == "location") {
-        const locationCoords = loading.coords;
+        const longitude =  "-0.17403363554747808";
+        const latitude = "51.49795711292189";
+        // const locationCoords = loading.coords;
         const busResponse = await getBusRoute(
-          locationCoords.longitude, 
-          locationCoords.latitude, 
+          longitude, 
+          latitude, 
           promptResponse.response
         );
 
+
+        speak("We're looking out for bus number");
+        speak(busResponse.busNumber);
         setTranscribedText(busResponse.busNumber || "Couldn't find bus route");
+      } else if (promptResponse.type == "unclear") {
+        setTranscribedText("Try Again");
+        speak(promptResponse.response);
       } else {
-        setTranscribedText(promptResponse.response || "No transcription found.");
+        speak("We're looking out for bus number");
+        speak(promptResponse.response);
+        setTranscribedText(promptResponse.response || "Couldn't find bus");
       }
+
+
+
+
+
+
 
     } catch (error) {
       console.error("Error transcribing audio:", error.response?.data || error);
