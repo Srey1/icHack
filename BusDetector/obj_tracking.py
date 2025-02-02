@@ -42,7 +42,6 @@ while cap.isOpened():
 
     # Process YOLO detection every 60 frames
     if frame_count % 60 == 0:
-        last_boxes = bus_boxes
         bus_boxes = []
         results = model(frame)
 
@@ -78,12 +77,6 @@ while cap.isOpened():
         # 🚀 Run OCR every 10 YOLO detections to reduce lag
         if ocr_counter % OCR_INTERVAL == 0:
             for i, (x1, y1, x2, y2) in enumerate(bus_boxes):
-                lx1, _, lx2, _ = last_boxes[i]
-                
-                if x1 < lx1 and x2 < lx2:
-                    print("moving away")
-                else:
-                    print("coming closer")
                     
                 # Crop the bus number area
                 bus_roi = frame[y1:y2, x1:x2]
