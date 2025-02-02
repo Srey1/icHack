@@ -2,6 +2,7 @@ import cv2
 import time  # Measure processing time
 import pytesseract  # OCR for bus number recognition
 from ultralytics import YOLO
+import numpy as np
 
 # Tesseract Setup (Required on Windows - Update path if necessary)
 # Uncomment and update the path if using Windows
@@ -19,14 +20,22 @@ start_time = time.time()
 frame_count = 0
 bus_boxes = []
 ocr_counter = 0
-OCR_INTERVAL = 10  # Run OCR every 10 YOLO detections
+OCR_INTERVAL = 1  # Run OCR every 10 YOLO detections
 
-# 🚀 Function: Preprocess image for better OCR performance
 def preprocess_for_tesseract(image):
-    """Convert image to grayscale and apply thresholding to improve OCR accuracy."""
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # Convert to grayscale
-    _, binary = cv2.threshold(gray, 120, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)  # Apply thresholding
-    return binary
+    """ Convert image to grayscale and apply sharpening to enhance text clarity. """
+    # Convert to grayscale
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Define a sharpening kernel
+    sharpen_kernel = np.array([[-1, -1, -1],
+                               [-1, 9, -1],
+                               [-1, -1, -1]])
+
+    # Apply the sharpening filter
+    sharpened = cv2.filter2D(gray, -1, sharpen_kernel)
+
+    return sharpened
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -54,13 +63,15 @@ while cap.isOpened():
 
                 # Preprocess image for Tesseract OCR
                 processed_roi = preprocess_for_tesseract(bus_roi)
-
+                cv2.imshow("OCR Input", processed_roi)
+                cv2.waitKey(0) 
                 # Run Tesseract OCR with number filtering
-                text = pytesseract.image_to_string(processed_roi, config="--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+                text = pytesseract.image_to_string(processed_roi, config="--oem 3 --psm 6 -c tessedit_char_whitelist=0123456789")
+
 
                 # Print detected text if it's not empty
                 if text.strip():
-                    print(f"🚍 Detected Bus Number: {text.strip()}")
+                    print(f"🚍 Detected Bus Number: {text}")
 
         ocr_counter += 1
 

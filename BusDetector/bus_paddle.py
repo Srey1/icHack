@@ -12,7 +12,7 @@ model = YOLO("yolov8n.pt")  # Use "yolov8s.pt" for better accuracy
 paddle = PaddleOCR(use_angle_cls=True, lang="en")
 
 # Open video stream (Change `0` for webcam or use file path)
-cap = cv2.VideoCapture("icHack/BusDetector/flipped_stock_footage/Bus_Footage_Cropped 20.mp4")
+cap = cv2.VideoCapture("icHack/BusDetector/flipped_stock_footage/Bus_Footage_Cropped 10.mp4")
 
 # Frame tracking
 frame_count = 0
@@ -60,8 +60,9 @@ while cap.isOpened():
                 bus_roi = enhance_contrast(bus_roi)
 
                 # Convert to RGB (PaddleOCR requires RGB)
-                bus_roi = cv2.cvtColor(bus_roi, cv2.COLOR_BGR2RGB)
-
+                # bus_roi = cv2.cvtColor(bus_roi, cv2.COLOR_BGR2RGB)
+                # cv2.imshow("lMAO", bus_roi)
+                # cv2.waitKey(0)
                 # Run OCR (Check for None before iterating)
                 text_results = paddle.ocr(bus_roi)
                 print(text_results)
