@@ -249,4 +249,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20, // Space before microphone button
   },
+  goModeBackground: {
+    backgroundColor: '#008000', // ✅ Green background in GO mode
+  },
+  goButton: {
+    backgroundColor: '#FFFFFF', // ✅ Keep button white in GO mode
+    borderColor: '#008000', // ✅ Green border in GO mode
+  },
+    goText: {
+    color: '#FFFFFF', // ✅ White text in GO mode
+  },
 });
