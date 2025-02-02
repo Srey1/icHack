@@ -14,11 +14,13 @@ import * as FileSystem from "expo-file-system";
 import axios from "axios";
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Speech from 'expo-speech';
+import Constants from "expo-constants";
+const {googleApiKey} = Constants.expoConfig.extra;
 
 const { width, height } = Dimensions.get('window');
 
 // Replace with your Google Cloud API Key
-const GOOGLE_API_KEY = "AIzaSyC4IR9PK46buD1Ra4Ogiv2RNk4S2JYPy2w";
+const GOOGLE_API_KEY = googleApiKey;
 
 export default function App() {
   const [recording, setRecording] = useState(null);
@@ -27,7 +29,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [permissionResponse, requestPermission] = Audio.usePermissions();
   const [sound, setSound] = useState(null);
-
+  console.log(GOOGLE_API_KEY);
   useEffect(() => {
     (async () => {
       if (!permissionResponse || permissionResponse.status !== "granted") {
@@ -40,6 +42,8 @@ export default function App() {
   const speak = (text) => {
     Speech.speak(text);
   };
+
+  
 
   // 🎤 Start Recording
   const startRecording = async () => {
