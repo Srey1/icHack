@@ -49,6 +49,7 @@ export default function App() {
 
 
   useEffect(() => {
+    console.log("Bus Number:", busNumber);
     axios
       .post(`http://${myApiUrl}:8000/api/bus/`, busNumber
       )
@@ -161,25 +162,30 @@ export default function App() {
       const promptResponse = await createPrompt(transcription);
       console.log("Prompt Response:", promptResponse.response);
 
+
       if (promptResponse.type == "location") {
-        const locationCoords = loading.coords;
+        const longitude =  "-0.17403363554747808";
+        const latitude = "51.49795711292189";
+        // const locationCoords = loading.coords;
         const busResponse = await getBusRoute(
-          locationCoords.longitude, 
-          locationCoords.latitude, 
+          longitude, 
+          latitude, 
           promptResponse.response
         );
-        
-        setTranscribedText(busResponse.busNumber || "Couldn't find bus route");
-      } else {
-        setTranscribedText(promptResponse.response || "No transcription found.");
-      }
 
-      if (busNumber) {
-        axios.post(`http://${myApiUrl}:8000/api/bus/`, String.toString(busNumber)).then((response) => {
-          console.log(response.data.message);
-        }).catch((error) => {
-          console.log(error);
-        });
+
+        speak("We're looking out for bus number");
+        speak(busResponse.busNumber);
+        setBusNumber(busResponse.busNumber);
+        setTranscribedText(busResponse.busNumber || "Couldn't find bus route");
+      } else if (promptResponse.type == "unclear") {
+        setTranscribedText("Try Again");
+        speak(promptResponse.response);
+      } else {
+        speak("We're looking out for bus number");
+        speak(promptResponse.response);
+        setBusNumber(promptResponse.response);
+        setTranscribedText(promptResponse.response || "Couldn't find bus");
       }
 
     } catch (error) {
@@ -283,5 +289,15 @@ const styles = StyleSheet.create({
     color: '#000000', // High contrast
     textAlign: 'center',
     marginBottom: 20, // Space before microphone button
+  },
+  goModeBackground: {
+    backgroundColor: '#008000', // ✅ Green background in GO mode
+  },
+  goButton: {
+    backgroundColor: '#FFFFFF', // ✅ Keep button white in GO mode
+    borderColor: '#008000', // ✅ Green border in GO mode
+  },
+    goText: {
+    color: '#FFFFFF', // ✅ White text in GO mode
   },
 });
